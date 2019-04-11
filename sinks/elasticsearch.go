@@ -17,10 +17,14 @@ limitations under the License.
 package sinks
 
 import (
+	"context"
+
 	"github.com/golang/glog"
-	"gopkg.in/olivere/elastic.v3"
-	api_v1 "k8s.io/api/core/v1"
+
 	"time"
+
+	"github.com/olivere/elastic"
+	api_v1 "k8s.io/api/core/v1"
 )
 
 type ElasticSearchConf struct {
@@ -157,7 +161,7 @@ func (es *ElasticSearchSink) sendEntries(entries []*api_v1.Event) {
 		bulkRequest = bulkRequest.Add(newIndex)
 	}
 
-	_, err := bulkRequest.Do()
+	_, err := bulkRequest.Do(context.Background())
 	if err != nil {
 		glog.Errorf("save events error: %v", err)
 	}
