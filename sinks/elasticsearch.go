@@ -23,9 +23,13 @@ import (
 
 	"time"
 
+	"github.com/aws/aws-sdk-go/aws/session"
+	v4 "github.com/aws/aws-sdk-go/aws/signer/v4"
 	"github.com/olivere/elastic"
 	api_v1 "k8s.io/api/core/v1"
 )
+
+// "github.com/aws/aws-sdk-go/aws/credentials/stscreds"
 
 type ElasticSearchConf struct {
 	SinkCommonConf
@@ -60,8 +64,17 @@ func DefaultElasticSearchConf() *ElasticSearchConf {
 }
 
 func NewElasticSearchSink(config *ElasticSearchConf) (*ElasticSearchSink, error) {
-	esClient, err := elastic.NewClient(elastic.SetSniff(false),
-		elastic.SetHealthcheckTimeoutStartup(10*time.Second), elastic.SetURL(config.Endpoint))
+	sess := session.Must(session.NewSession())
+
+	signer := v4.NewSigner(sess.Config.Credentials)
+	awsClient, err := NewSigningClient(signer, nil, "es", "us-east-1")
+	esClient, err := elastic.NewClient(
+		elastic.SetURL(config.Endpoint),
+		elastic.SetSniff(false),
+		// elastic.SetHealthcheck(false),
+		elastic.SetHealthcheckTimeoutStartup(10*time.Second),
+		elastic.SetHttpClient(awsClient),
+	)
 	if err != nil {
 		glog.Errorf("Error create elasticsearch(%s) output %v", config.Endpoint, err)
 		return nil, err

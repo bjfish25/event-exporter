@@ -14,6 +14,9 @@ vet:
 build:
 	go build -ldflags -s -v -o bin/event-exporter .
 
+dockerbuild:
+	env GOOS=linux GOARCH=amd64 go build -ldflags -s -v -o bin/event-exporter .
+
 run: build
 	bin/event-exporter
 
