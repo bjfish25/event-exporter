@@ -10,6 +10,11 @@ Inspired by https://github.com/GoogleCloudPlatform/k8s-stackdriver/tree/master/e
 $ cat Makefile
 ```
 
+# Changes from fork
+
+* Added support for AWS v4 signing of elasticsearch
+  * see github.com/sha1sum/aws_signing_client
+
 # How to config
 
 ## Event exporter options:
