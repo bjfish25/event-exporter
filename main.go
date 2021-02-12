@@ -47,6 +47,7 @@ var (
 		"expose Prometheus http handler")
 	sinkName              = flag.String("sink", sinkNameElasticSearch, "Sink type to save the exported events: elasticsearch/kafka/http")
 	elasticsearchEndpoint = flag.String("elasticsearch-server", "http://elasticsearch:9200/", "Elasticsearch endpoint")
+	indexName             = flag.String("index-name", "events", "Name of the index on elasticsearch")
 
 	// for http sink
 	httpEndpoint = flag.String("http-endpoint", "", "Http endpoint")
@@ -90,6 +91,7 @@ func main() {
 	if *sinkName == sinkNameElasticSearch {
 		config := sinks.DefaultElasticSearchConf()
 		config.Endpoint = *elasticsearchEndpoint
+		config.IndexName = *indexName
 		outSink, err = sinks.NewElasticSearchSink(config)
 		if err != nil {
 			glog.Fatalf("Failed to initialize elasticsearch output: %v", err)

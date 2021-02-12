@@ -33,9 +33,10 @@ import (
 
 type ElasticSearchConf struct {
 	SinkCommonConf
-	Endpoint string
-	User     string
-	Password string
+	Endpoint  string
+	User      string
+	Password  string
+	IndexName string
 }
 
 type ElasticSearchSink struct {
@@ -170,7 +171,9 @@ func (es *ElasticSearchSink) sendEntries(entries []*api_v1.Event) {
 
 	for _, event := range entries {
 		glog.Infof("Orig obj: %v", event.InvolvedObject)
-		newIndex := elastic.NewBulkIndexRequest().Index(eventsLogName).Type(eventsLogName).Id(string(event.ObjectMeta.UID)).Doc(event)
+		date := time.Now()
+		esIndexName := es.config.IndexName + "-" + date.Format("2006.01.02")
+		newIndex := elastic.NewBulkIndexRequest().Index(esIndexName).Type(esIndexName).Id(string(event.ObjectMeta.UID)).Doc(event)
 		bulkRequest = bulkRequest.Add(newIndex)
 	}
 
