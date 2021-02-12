@@ -1,5 +1,7 @@
 package sinks
 
+// see github.com/sha1sum/aws_signing_client
+
 import (
 	"bytes"
 	"io"

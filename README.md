@@ -48,6 +48,10 @@ Common options:
          Maximum number of concurrent requests to Stackdriver (default 10)
    ```
 
+## Proxy
+
+Used with environment variables http_proxy/no_proxy
+
 # Deploy on kubernetes
 
 ```
